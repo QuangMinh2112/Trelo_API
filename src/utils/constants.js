@@ -1,3 +1,4 @@
-export const HttpStatusCode = {
-  OK: 200
+export const BOARD_TYPE = {
+  PUBLIC: 'public',
+  PRIVATE: 'private'
 }
