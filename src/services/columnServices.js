@@ -33,6 +33,20 @@ const update = async (columnId, reqBody) => {
     throw new Error(error)
   }
 }
+
+const updateTitle = async (columnId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now()
+    }
+    const updatedColumn = await columnModel.updateTitle(columnId, updateData)
+
+    return { updatedColumn, success: true }
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 const deleteItem = async (columnId) => {
   try {
     const targetColumn = await columnModel.findOneById(columnId)
@@ -54,4 +68,4 @@ const deleteItem = async (columnId) => {
   }
 }
 
-export const columnServices = { createNew, update, deleteItem }
+export const columnServices = { createNew, update, deleteItem, updateTitle }

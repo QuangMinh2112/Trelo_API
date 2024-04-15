@@ -6,10 +6,9 @@ import { CLOSE_DB, CONNECT_DB } from '~/configs/connectDB'
 import { env } from '~/configs/environment'
 import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
+import { app, server } from './sockets/socket'
 
 const START_SERVER = () => {
-  const app = express()
-
   app.use(express.json())
   app.use(cors())
 
@@ -18,9 +17,16 @@ const START_SERVER = () => {
 
   // Middleware handlle error
   app.use(errorHandlingMiddleware)
-  app.listen(process.env.APP_PORT, process.env.APP_HOST, () => {
-    console.log(`2. I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
-  })
+
+  if (env.BUILD_MODE === 'production') {
+    server.listen(process.env.PORT, () => {
+      console.log(`2. I am running on Production at Port ${process.env.PORT}`)
+    })
+  } else {
+    server.listen(process.env.LOCAL_DEV_APP_PORT, process.env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`2. I am running at http://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}`)
+    })
+  }
 
   // Thực hiện các tác vụ cleanup trước khi dừng server
   exitHook(() => {

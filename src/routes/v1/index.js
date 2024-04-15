@@ -5,6 +5,8 @@ import { StatusCodes } from 'http-status-codes'
 import { boardRoutes } from '~/routes/v1/boardRouter'
 import { cardRoutes } from './cardRouter'
 import { columnRoutes } from './columnRouter'
+import { userRoutes } from './userRouter'
+import { invitationRoutes } from './invitationRouter'
 
 router.get('/status', (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'Apis v1 are ready to use' })
@@ -17,5 +19,12 @@ router.use('/columns', columnRoutes)
 
 // Card API
 router.use('/cards', cardRoutes)
+
+// User API
+router.use('/auth', userRoutes)
+
+// Invitation API
+
+router.use('/invitation', invitationRoutes)
 
 export const APIs_V1 = router

@@ -9,6 +9,20 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   columnId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   title: Joi.string().required().min(3).max(50).trim().strict(),
   description: Joi.string().optional(),
+  cover: Joi.string().optional().default(null),
+  memberIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
+  comments: Joi.array()
+    .items(
+      Joi.object({
+        userId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE).required(),
+        userAvatar: Joi.string().required(),
+        userDisplayname: Joi.string().required(),
+        content: Joi.string().required(),
+        createdAt: Joi.date().timestamp('javascript').default(Date.now)
+      }).default(null)
+    )
+    .default([]),
+  attachments: Joi.array().default([]),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
@@ -78,11 +92,29 @@ const update = async (cardId, updatedData) => {
   }
 }
 
+const updateCardDetail = async (cardId, updatedData) => {
+  try {
+    Object.keys(updatedData).forEach((fieldName) => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updatedData[fieldName]
+      }
+    })
+    const result = await GET_DB()
+      .collection(CARD_COLLECTION_NAME)
+      .findOneAndUpdate({ _id: new ObjectId(cardId) }, { $set: updatedData }, { returnDocument: 'after' })
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
   update,
-  deleteManyById
+  deleteManyById,
+  updateCardDetail
 }

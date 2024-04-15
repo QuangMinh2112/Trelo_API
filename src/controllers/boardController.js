@@ -20,6 +20,15 @@ const update = async (req, res, next) => {
   }
 }
 
+const getAll = async (req, res, next) => {
+  try {
+    const board = await boardServices.getAll()
+    res.status(StatusCodes.OK).json(board)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const getDetailBoard = async (req, res, next) => {
   try {
     const boardId = req.params
@@ -38,4 +47,4 @@ const moveCardTwoDifferentColumn = async (req, res, next) => {
   }
 }
 
-export const boardController = { createNew, getDetailBoard, update, moveCardTwoDifferentColumn }
+export const boardController = { createNew, getDetailBoard, update, moveCardTwoDifferentColumn, getAll }

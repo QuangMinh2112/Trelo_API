@@ -64,4 +64,14 @@ const getDetails = async (boardId) => {
   return cloneBoard
 }
 
-export const boardServices = { createNew, getDetails, update, moveCardTwoDifferentColumn }
+const getAll = async () => {
+  const board = await boardModel.getAll()
+
+  if (!board) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found')
+  }
+
+  return board
+}
+
+export const boardServices = { createNew, getDetails, update, moveCardTwoDifferentColumn, getAll }

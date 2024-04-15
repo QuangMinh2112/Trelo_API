@@ -88,6 +88,26 @@ const update = async (columnId, updatedData) => {
     throw new Error(error)
   }
 }
+const updateTitle = async (columnId, updatedData) => {
+  try {
+    Object.keys(updatedData).forEach((fieldName) => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updatedData[fieldName]
+      }
+    })
+
+    const result = await GET_DB()
+      .collection(COLUMN_COLLECTION_NAME)
+      .findOneAndUpdate(
+        { _id: new ObjectId(columnId) },
+        { $set: updatedData }, // push id of column to columnOrderIds array
+        { returnDocument: 'after' } // get record after update
+      )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 const deletedOneById = async (columnId) => {
   try {
@@ -109,5 +129,6 @@ export const columnModel = {
   findOneById,
   pushCardOrderIds,
   update,
+  updateTitle,
   deletedOneById
 }

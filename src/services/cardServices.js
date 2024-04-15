@@ -16,4 +16,14 @@ const createNew = async (reqBody) => {
   return getNewCard
 }
 
-export const cardServices = { createNew }
+const editDetailCard = async (cardId, reqBody) => {
+  const updatedData = {
+    ...reqBody,
+    updatedAt: Date.now()
+  }
+  const updatedCard = await cardModel.updateCardDetail(cardId, updatedData)
+
+  return { success: updatedCard ? true : false, updatedCard }
+}
+
+export const cardServices = { createNew, editDetailCard }

@@ -9,5 +9,13 @@ const createNew = async (req, res, next) => {
     next(error)
   }
 }
-
-export const cardController = { createNew }
+const editDetailCard = async (req, res, next) => {
+  try {
+    const cardId = req.params
+    const detailCardBody = await cardServices.editDetailCard(cardId.id, req.body)
+    res.status(StatusCodes.OK).json(detailCardBody)
+  } catch (error) {
+    next(error)
+  }
+}
+export const cardController = { createNew, editDetailCard }

@@ -14,6 +14,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   slug: Joi.string().min(3).trim().strict(),
   description: Joi.string().required().min(3).max(256).trim().strict(),
   columnOrderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
+  createdBy: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
@@ -28,7 +29,11 @@ const validateBeforeCreate = async (data) => {
 const createNew = async (data) => {
   try {
     const validateData = await validateBeforeCreate(data)
-    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validateData)
+    const addNewBoard = {
+      ...validateData,
+      createdBy: new ObjectId(validateData.createdBy)
+    }
+    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(addNewBoard)
     return createdBoard
   } catch (error) {
     throw new Error(error)
@@ -101,6 +106,7 @@ const getDetails = async (id) => {
         }
       ])
       .toArray()
+
     return result[0] || {}
   } catch (error) {
     throw new Error(error)
@@ -122,6 +128,16 @@ const pushColumnOrderIds = async (column) => {
     throw new Error(error)
   }
 }
+
+const getAll = async () => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).find({}).toArray()
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 const pullColumnOrderIds = async (column) => {
   try {
     const result = await GET_DB()
@@ -146,5 +162,6 @@ export const boardModel = {
   getDetails,
   pushColumnOrderIds,
   update,
-  pullColumnOrderIds
+  pullColumnOrderIds,
+  getAll
 }
