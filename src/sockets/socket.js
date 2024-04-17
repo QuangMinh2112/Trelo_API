@@ -5,9 +5,10 @@ import express from 'express'
 const app = express()
 
 const server = http.createServer(app)
+// https://trello-web-quang-minh.vercel.app
 const io = new Server(server, {
   cors: {
-    origin: ['https://trello-web-quang-minh.vercel.app'],
+    origin: ['http://localhost:5173'],
     methods: ['GET', 'POST']
   }
 })
@@ -30,7 +31,6 @@ io.on('connection', async (socket) => {
   })
 
   socket.on('sendNotification', ({ inviteerEmail, inviteeEmail, boardName, inviteerName, status, invitationId }) => {
-    console.log('🚀 ~ socket.on ~ invitationId:', invitationId)
     const receiver = getUser(inviteeEmail)
 
     io.to(receiver?.socketId).emit('getNotification', {
