@@ -7,10 +7,11 @@ import { env } from '~/configs/environment'
 import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 import { app, server } from './sockets/socket'
+import { corsOptions } from './configs/cors'
 
 const START_SERVER = () => {
   app.use(express.json())
-  app.use(cors())
+  app.use(cors(corsOptions))
 
   // User API v1
   app.use('/v1', APIs_V1)
