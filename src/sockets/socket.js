@@ -8,7 +8,7 @@ const server = http.createServer(app)
 // https://trello-web-quang-minh.vercel.app
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: ['https://trello-web-quang-minh.vercel.app'],
     methods: ['GET', 'POST']
   }
 })
