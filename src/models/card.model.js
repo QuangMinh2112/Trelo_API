@@ -99,9 +99,28 @@ const updateCardDetail = async (cardId, updatedData) => {
         delete updatedData[fieldName]
       }
     })
+
+    const updateFields = {}
+
+    if (updatedData.title !== undefined) {
+      updateFields.$set = { title: updatedData.title }
+    }
+    if (updatedData.cover !== undefined) {
+      updateFields.$set = { ...updateFields.$set, cover: updatedData.cover }
+    }
+    if (updatedData.description !== undefined) {
+      updateFields.$set = { ...updateFields.$set, description: updatedData.description }
+    }
+
+    if (updatedData.comments && updatedData.comments.length > 0) {
+      updateFields.$push = {
+        comments: { $each: updatedData.comments }
+      }
+    }
+
     const result = await GET_DB()
       .collection(CARD_COLLECTION_NAME)
-      .findOneAndUpdate({ _id: new ObjectId(cardId) }, { $set: updatedData }, { returnDocument: 'after' })
+      .findOneAndUpdate({ _id: new ObjectId(cardId) }, updateFields, { returnDocument: 'after' })
 
     return result
   } catch (error) {

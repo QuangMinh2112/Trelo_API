@@ -36,4 +36,25 @@ const getAll = async (req, res, next) => {
     next(error)
   }
 }
-export const userController = { register, getDetailUser, login, getAll }
+
+const updateInfo = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const updatedUser = await userServices.updateInfo(id, req.body)
+    res.status(StatusCodes.OK).json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const idUser = req.user._id
+    const updatedUser = await userServices.resetPassword(idUser, req.body)
+    res.status(StatusCodes.OK).json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const userController = { register, getDetailUser, login, getAll, updateInfo, resetPassword }

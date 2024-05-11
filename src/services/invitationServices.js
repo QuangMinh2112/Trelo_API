@@ -7,7 +7,6 @@ const sendInvitation = async (reqBody, inviterId) => {
 
   const createdSendInvitation = await invitationModel.sendInvitation(payload, inviterId)
   const result = await invitationModel.findOneById(createdSendInvitation.insertedId)
-  console.log('🚀 ~ sendInvitation ~ result:', result)
   return { success: result ? true : false, data: result }
 }
 

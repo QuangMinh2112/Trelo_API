@@ -7,6 +7,7 @@ import { cardRoutes } from './cardRouter'
 import { columnRoutes } from './columnRouter'
 import { userRoutes } from './userRouter'
 import { invitationRoutes } from './invitationRouter'
+import { uploadRoutes } from './uploadRouter'
 
 router.get('/status', (req, res) => {
   res.status(StatusCodes.OK).json({ message: 'Apis v1 are ready to use' })
@@ -24,7 +25,8 @@ router.use('/cards', cardRoutes)
 router.use('/auth', userRoutes)
 
 // Invitation API
-
 router.use('/invitation', invitationRoutes)
+
+router.use('/upload', uploadRoutes)
 
 export const APIs_V1 = router

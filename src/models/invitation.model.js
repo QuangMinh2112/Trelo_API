@@ -34,7 +34,6 @@ const sendInvitation = async (payload, inviterId) => {
   try {
     const existingUser = await GET_DB().collection(userModel.USER_COLLECTION_NAME).findOne({ email: payload.email })
     if (!existingUser) throw new Error('User does not exist in database !!!')
-
     const invitationData = {
       inviterId: new ObjectId(inviterId),
       inviteeId: new ObjectId(existingUser._id),
@@ -136,6 +135,14 @@ const rejectInvitation = async (invitationId) => {
   }
 }
 
+const getAll = async () => {
+  try {
+    const result = await GET_DB().collection(INVITATION_COLLECTION_NAME).find({}).toArray()
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const invitationModel = {
   INVITATION_COLLECTION_NAME,
   INVITATION_COLLECTION_SCHEMA,
@@ -143,5 +150,6 @@ export const invitationModel = {
   getDetails,
   findOneById,
   acceptInvitation,
-  rejectInvitation
+  rejectInvitation,
+  getAll
 }

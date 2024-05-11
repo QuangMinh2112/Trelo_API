@@ -80,8 +80,62 @@ const findOneById = async (id) => {
 const getAll = async () => {
   try {
     const result = await GET_DB().collection(USER_COLLECTION_NAME).find({}).toArray()
-    console.log('🚀 ~ getAll ~ result:', result)
     return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const updateInfo = async (userId, reqBody) => {
+  try {
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .findOneAndUpdate({ _id: new ObjectId(userId) }, { $set: reqBody }, { returnDocument: 'after' })
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const uploadAvatar = async (userId, path) => {
+  try {
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .findOneAndUpdate({ _id: new ObjectId(userId) }, { $set: { avatar: path } }, { returnDocument: 'after' })
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const resetPassword = async (idUser, reqBody) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = reqBody
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      throw new Error('Missing input value for reset password !')
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new Error('The new password does not match !')
+    }
+
+    const existingUser = await findOneById(idUser)
+    if (!existingUser) {
+      throw new Error('User not found')
+    }
+    const isPasswordMatch = await bcrypt.compare(currentPassword, existingUser.password)
+
+    if (!isPasswordMatch) {
+      throw new Error('Incorrect old password')
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10)
+    await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(idUser) }, { $set: { password: hashedNewPassword } })
+    return { message: 'Password reset successful' }
   } catch (error) {
     throw new Error(error)
   }
@@ -93,5 +147,8 @@ export const userModel = {
   register,
   login,
   findOneById,
-  getAll
+  getAll,
+  updateInfo,
+  uploadAvatar,
+  resetPassword
 }

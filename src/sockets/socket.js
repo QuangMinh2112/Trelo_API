@@ -8,7 +8,7 @@ const server = http.createServer(app)
 // https://trello-web-quang-minh.vercel.app
 const io = new Server(server, {
   cors: {
-    origin: ['https://trello-web-quang-minh.vercel.app'],
+    origin: '*',
     methods: ['GET', 'POST']
   }
 })
@@ -30,17 +30,21 @@ io.on('connection', async (socket) => {
     addNewUser(email, socket.id)
   })
 
-  socket.on('sendNotification', ({ inviteerEmail, inviteeEmail, boardName, inviteerName, status, invitationId }) => {
-    const receiver = getUser(inviteeEmail)
+  socket.on(
+    'sendNotification',
+    ({ inviteerEmail, inviteeEmail, boardName, boardId, inviteerName, status, invitationId }) => {
+      const receiver = getUser(inviteeEmail)
 
-    io.to(receiver?.socketId).emit('getNotification', {
-      _id: invitationId,
-      inviteerEmail,
-      boardName,
-      inviteerName,
-      status
-    })
-  })
+      io.to(receiver?.socketId).emit('getNotification', {
+        _id: invitationId,
+        inviteerEmail,
+        boardName,
+        boardId,
+        inviteerName,
+        status
+      })
+    }
+  )
   socket.on('disconnect', () => {
     removeUser(socket.id)
   })
