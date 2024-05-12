@@ -1,11 +1,12 @@
+import { env } from '~/configs/environment'
 import { cardModel } from '~/models/card.model'
 import { columnModel } from '~/models/column.model'
 const cloudinary = require('cloudinary').v2
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  cloud_name: env.CLOUDINARY_NAME,
+  api_key: env.CLOUDINARY_API_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET
 })
 
 const createNew = async (reqBody) => {

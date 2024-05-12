@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
 import { generateAccessToken } from '~/middlewares/jwt'
 import { boardModel } from '~/models/board.model'
-import { cloneDeep, filter } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { invitationModel } from '~/models/invitation.model'
 
 const register = async (reqBody) => {
